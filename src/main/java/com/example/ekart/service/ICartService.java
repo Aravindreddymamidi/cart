@@ -1,10 +1,12 @@
 package com.example.ekart.service;
 
-import com.example.ekart.model.Product;
+import com.example.ekart.model.CartItem;
 
 import java.util.List;
 
 public interface ICartService {
 
-  List<Product> getAllProducts();
+  List<CartItem> getAllProductsOfCart(String userId);
+
+  void addProductsToCart(AddProductRequest addProductRequest);
 }
