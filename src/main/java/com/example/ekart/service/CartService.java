@@ -4,34 +4,34 @@ import com.example.ekart.model.CartItem;
 import com.example.ekart.model.Product;
 import com.example.ekart.model.User;
 import com.example.ekart.repository.CartRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
-public class CartService implements ICartService {
+public class CartService {
 
+  @Autowired
   CartRepository cartRepository;
 
-
-  @Override
   public List<CartItem> getAllProductsOfCart(String userId) {
-    System.out.println("################"+userId);
-    return cartRepository.findAll(userId);
+    System.out.println("GetItem###########"+userId);
+    return cartRepository.findAllByUserId(userId);
   }
 
-  @Override
-  public void addProductsToCart(AddProductRequest addProductRequest) {
+  public List<CartItem> addProductsToCart(AddProductRequest addProductRequest) {
     Product product = Product.builder()
         .productId(addProductRequest.productId)
         .productName(addProductRequest.productName)
         .price(addProductRequest.getPrice())
         .description(addProductRequest.description).build();
-    User user = User.builder().userId(addProductRequest.getUserId()).name(addProductRequest.userName).build();
-    CartItem cartItem = CartItem.builder().cartItemId(UUID.randomUUID()).
+    User user = User.builder().userId(addProductRequest.getUserId()).name(addProductRequest.name).build();
+    CartItem cartItem = CartItem.builder().
         product(product).quantity(addProductRequest.quantity).user(user).build();
+    System.out.println("Saved Item##########"+user.getUserId());
 
     cartRepository.save(cartItem);
+    return cartRepository.findAll();
   }
 }

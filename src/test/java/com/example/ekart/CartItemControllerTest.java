@@ -1,20 +1,20 @@
 package com.example.ekart;
 
-import com.example.ekart.controller.CartController;
+import com.example.ekart.controller.CartItemController;
 import com.example.ekart.model.CartItem;
 import com.example.ekart.model.Product;
 import com.example.ekart.model.User;
 import com.example.ekart.service.AddProductRequest;
-import com.example.ekart.service.ICartService;
+import com.example.ekart.service.CartService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -23,38 +23,45 @@ import static org.mockito.Mockito.when;
 public class CartItemControllerTest {
 
   @InjectMocks
-  CartController cartController;
+  CartItemController cartItemController;
   @Mock
-  ICartService cartService;
+  CartService cartService;
+
+  User user;
+  Product product;
+  CartItem cartItem;
+  ArrayList<CartItem> expected = new ArrayList<>();
+
+  @BeforeEach
+  void setUp() {
+    String cartItemId = "6098d60f-b9ea-4817-aaae-91a736844951";
+    user = new User("101", "tej");
+    product = new Product("1000", "Book", 100.0, "XP");
+    cartItem = new CartItem(cartItemId, user, product, 2);
+    expected.add(cartItem);
+  }
 
   @Test
   void shouldGetAllProducts() {
-    User user = new User("101", "tej");
-    Product product = new Product(1000, "Book", 100.0, "XP");
-
-    CartItem cartItem = new CartItem(UUID.randomUUID(), user, product, 2);
-    ArrayList<CartItem> expected = new ArrayList<>();
-    expected.add(cartItem);
-
     when(cartService.getAllProductsOfCart(user.getUserId())).thenReturn(expected);
 
-    assertThat(expected).isEqualTo(cartController.getCartItemsForUser(user.getUserId()));
+    assertThat(expected).isEqualTo(cartItemController.getCartItemsForUser(user.getUserId()));
   }
 
   @Test
   void shouldAddProductToCart() {
     AddProductRequest addProductRequest = AddProductRequest.builder().
         userId("101")
-        .userName("tej")
-        .productId(1002)
-        .description("GermanMade")
-        .productName("Gun")
+        .name("tej")
+        .productId("1000")
+        .description("XP")
+        .productName("Book")
         .price(100.0)
         .quantity(2)
         .build();
 
-    HttpStatus status = cartController.addProductToCart(addProductRequest);
+    when(cartService.addProductsToCart(addProductRequest)).thenReturn(expected);
 
-    assertThat(status).isEqualTo(HttpStatus.ACCEPTED);
+    assertThat(expected).isEqualTo(cartItemController.addProductToCart(addProductRequest));
   }
 }
