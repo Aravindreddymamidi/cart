@@ -37,7 +37,7 @@ public class CartItemControllerTest {
     String cartItemId = "6098d60f-b9ea-4817-aaae-91a736844951";
     user = new User("101", "tej");
     product = new Product("1000", "Book", 100.0, "XP");
-    cartItem = new CartItem(cartItemId, user, product, 2);
+    cartItem = new CartItem(cartItemId, "1001", product, 2);
     expected.add(cartItem);
   }
 
@@ -52,7 +52,6 @@ public class CartItemControllerTest {
   void shouldAddProductToCart() {
     AddProductRequest addProductRequest = AddProductRequest.builder().
         userId("101")
-        .name("tej")
         .productId("1000")
         .description("XP")
         .productName("Book")

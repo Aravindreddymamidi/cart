@@ -16,6 +16,10 @@ public class CartService {
   CartRepository cartRepository;
 
   public List<CartItem> getAllProductsOfCart(String userId) {
+    Product product = new Product("1000", "Book", 100.0, "XP");
+    CartItem cartItem = new CartItem("1511","1001", product, 2);
+    cartRepository.save(cartItem);
+
     System.out.println("GetItem###########"+userId);
     return cartRepository.findAllByUserId(userId);
   }
@@ -26,10 +30,10 @@ public class CartService {
         .productName(addProductRequest.productName)
         .price(addProductRequest.getPrice())
         .description(addProductRequest.description).build();
-    User user = User.builder().userId(addProductRequest.getUserId()).name(addProductRequest.name).build();
     CartItem cartItem = CartItem.builder().
-        product(product).quantity(addProductRequest.quantity).user(user).build();
-    System.out.println("Saved Item##########"+user.getUserId());
+        product(product).quantity(addProductRequest.quantity).userId(addProductRequest.getUserId()).build();
+    System.out.println("Save Item##########"+addProductRequest.getUserId());
+    System.out.println("Saved Item##########"+cartItem);
 
     cartRepository.save(cartItem);
     return cartRepository.findAll();
