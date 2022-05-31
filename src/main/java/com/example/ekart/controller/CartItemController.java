@@ -20,7 +20,6 @@ public class CartItemController {
   @Autowired
   CartService cartService;
 
-  @CrossOrigin(origins = "http://localhost:4200")
   @GetMapping("/get-items/{userId}")
   public List<CartItem> getCartItemsForUser(@PathVariable("userId") String userId) {
     return cartService.getAllProductsOfCart(userId);
